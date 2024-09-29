@@ -1,3 +1,5 @@
+
+
 plugins {
     id("java")
 }
@@ -9,16 +11,33 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
 
-    testImplementation("org.seleniumhq.selenium:selenium-java:4.24.0")
-    testImplementation("org.testng:testng:7.10.2")
+
+
+dependencies {
+    //implementation(platform("org.junit:junit-bom:5.10.0"))
+    //implementation("org.junit.jupiter:junit-jupiter")
+
+    implementation("org.seleniumhq.selenium:selenium-java:4.25.0")
+    implementation("org.testng:testng:7.10.2")
     implementation("org.apache.logging.log4j:log4j-core:2.24.0")
+    implementation("io.github.bonigarcia:webdrivermanager:5.9.2")
+
 
 }
 
 tasks.test {
-    useJUnitPlatform()
+    useTestNG()
+    systemProperties = System.getProperties().map { it.key.toString() to it.value }.toMap()
+}
+
+
+
+
+tasks.register<Test>("runWebTests") {
+    outputs.upToDateWhen { false }
+    useTestNG {
+        useDefaultListeners = true
+         setOutputDirectory(layout.buildDirectory.dir("web-reports").get().asFile)
+    }
 }
